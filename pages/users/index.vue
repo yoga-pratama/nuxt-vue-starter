@@ -8,6 +8,24 @@
     <v-card ref="form">
       <v-card-text>
         <v-text-field
+          label="Name"
+          placeholder="John Doe"
+          v-model="name"
+          required
+          ref="name"
+          :rules="[() => !!name || 'Di isi woy']"
+          :error-messages="errorMessages"
+        ></v-text-field>
+        <v-text-field
+          label="Email"
+          placeholder="John Doe"
+          v-model="email"
+          required
+          ref="email"
+          :rules="[() => !!email || 'Di isi woy']"
+          :error-messages="errorMessages"
+        ></v-text-field>
+        <v-text-field
           label="Username"
           placeholder="John Doe"
           v-model="username"
@@ -26,7 +44,7 @@
           :error-messages="errorMessages"
         ></v-text-field>
 
-        <v-select
+        <!-- <v-select
           autocomplete
           label="Country"
           placeholder="Select..."
@@ -36,7 +54,7 @@
           ref="country"
           required
           multiple
-        ></v-select>
+        ></v-select> -->
 
         <v-btn color="primary" flat @click="simpan">Submit</v-btn>
 
@@ -60,7 +78,9 @@ export default {
   layout: "dashboard",
   data() {
     return {
+      name: "",
       username: "",
+      email: "",
       password: "",
       errorMessages: [],
       negara: "",
@@ -68,7 +88,20 @@ export default {
     };
   },
   methods: {
-    simpan() {},
+    simpan() {
+      this.$axios
+        .post("/addUser", {
+          name: this.name,
+          username: this.username,
+          email: this.email,
+          password: this.password,
+        })
+        .then((response) => {
+          if (response.status == 201) {
+            alert("Data tersimpan");
+          }
+        });
+    },
   },
 };
 </script>
