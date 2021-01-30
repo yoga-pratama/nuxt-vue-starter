@@ -69,6 +69,43 @@
       </v-card-text>
     </v-card>
 
+    <v-flex lg12>
+      <v-toolbar card color="white">
+        <v-text-field
+          flat
+          solo
+          prepend-icon="search"
+          placeholder="Type something"
+          v-model="search"
+          hide-details
+          class="hidden-sm-and-down"
+        ></v-text-field>
+        <v-btn icon>
+          <v-icon>filter_list</v-icon>
+        </v-btn>
+      </v-toolbar>
+      <v-data-table
+        :headers="table_header"
+        :items="users"
+        :search="search"
+        class="elevation-1"
+      >
+        <template slot="items" slot-scope="props">
+          <td>{{ props.item.username }}</td>
+          <td>{{ props.item.name }}</td>
+          <td>{{ props.item.email }}</td>
+          <td>{{ props.item.password }}</td>
+          <td>
+            <v-btn depressed outline icon fab dark color="primary" small @click="updateData(props.item)">
+              <v-icon>edit</v-icon>
+            </v-btn>
+            <v-btn depressed outline icon fab dark color="pink" small @click="deleteData">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </td>
+        </template>
+      </v-data-table>
+    </v-flex>
     <v-alert type="success"></v-alert>
   </v-container>
 </template>
@@ -85,7 +122,23 @@ export default {
       errorMessages: [],
       negara: "",
       countries: ["Indonesia", "Malaysia"],
+
+      search: "",
+      table_header: [
+        {
+          text: "Username",
+          value: "username",
+        },
+        { text: "Name", value: "name" },
+        { text: "Email", value: "email" },
+        { text: "Password", value: "password" },
+        { text: "Actions", value: "" },
+      ],
+      users: [],
     };
+  },
+  mounted() {
+    this.getUserData();
   },
   methods: {
     simpan() {
@@ -102,6 +155,31 @@ export default {
           }
         });
     },
+    getUserData() {
+      this.$axios.get("/getUser").then((response) => {
+        // this.users = response.data.users;
+        //console.log(this.users);
+        response.data.users.forEach((el) => {
+          console.log(el);
+          var push_data = {
+            name: el.name,
+            username: el.username,
+            email: el.email,
+            password: el.password,
+          };
+          this.users.push(push_data);
+        });
+
+        console.log(this.users);
+      });
+    },
+    updateData(item){
+        alert(item.username);
+    },
+    deleteData(){
+      alert('test');
+
+    }
   },
 };
 </script>
